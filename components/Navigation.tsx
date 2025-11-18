@@ -1,93 +1,149 @@
-"use client"
-import { motion } from "framer-motion"
+"use client";
+import { usePathname } from "next/navigation";
+import { AnimatePresence, motion } from "framer-motion";
 import Link from "next/link";
 import { useStore } from "./State";
-import { usePathname } from 'next/navigation';
 
-type Props = {}
-interface openState {
-    open: false;
-  setOpen: (open: boolean) => void;
+type Props = {};
+
+interface NavigationState {
+    open: boolean;
+    setOpen: (open: boolean) => void;
 }
 
-interface languagesState {
-  language: string,
+interface LanguageState {
+    language: string;
 }
+
+const NAV_LINKS = [
+    {
+        href: "/",
+        label: {
+            hun: "Kezdőlap",
+            eng: "Home",
+        },
+    },
+    {
+        href: "/biography",
+        label: {
+            hun: "Életrajz",
+            eng: "Biography",
+        },
+    },
+    {
+        href: "/gallery",
+        label: {
+            hun: "Képtár",
+            eng: "Gallery",
+        },
+    },
+    {
+        href: "/videos",
+        label: {
+            hun: "Videók",
+            eng: "Videos",
+        },
+    },
+] as const;
 
 export default function Navigation({}: Props) {
-  const language = useStore((state: languagesState) => state.language);
     const pathname = usePathname();
-    
-    const open = useStore((state: openState) => state.open);
-    const setOpen = useStore((state: openState) => state.setOpen);
-    const styling = "w-7 bg-blue-950 h-0.5";
-    const stylingOpen = "w-7 bg-blue-100 h-0.5";
+    const language = useStore((state: LanguageState) => state.language);
+    const open = useStore((state: NavigationState) => state.open);
+    const setOpen = useStore((state: NavigationState) => state.setOpen);
 
-    const toggleOpen = (value: boolean) => {
-        setOpen(value);
-    }
-    
-  return (
-    <div>
-        <div className={`flex flex-col gap-1.5 right-8 top-5 z-50 ${open ? "fixed" : "absolute"}`} onClick={e => toggleOpen(!open)}>
-            <motion.div 
-            animate={{rotate: open ? -45 : 0, y: open ? 14 : 0}}
-            className={open ? stylingOpen : styling}/>
-            <motion.div 
-            animate={{opacity: open ? 0 : 1}}
-                transition={{ duration: 0.1 }}
-                className={open ? stylingOpen : styling}/>
-            <motion.div 
-            animate={{
-                rotate: open ? 45 : 0,
-                y: open ? -1.5 : 0,
-            }}
-            className={open ? stylingOpen : styling}/>
-        </div>
-        {open && 
-            <motion.div 
-            initial={{y:-270}}
-            animate={{y:0}}
-            transition={{duration:1}}
-            className=" h-[40%] bg-gradient-to-b from-gray-700 to-gray-900 w-full flex flex-col justify-center items-center gap-10 z-40 fixed top-0 rounded-bl-lg rounded-br-lg text-white"
-            > 
-              <motion.div
-              initial={{x:-5, opacity:0}}
-              animate={{x:0, opacity:1}}
-              transition={{duration:1, delay:0.4}}
-              >
-                <Link href="/" onClick={e => toggleOpen(false)} className={pathname === "/" ? "bg-red-400/80  px-2 py-1 rounded-full italic w-20 mx-auto font-bold" : "w-20 mx-auto font-mono"}>{language === "hun" ? "Kezdőlap" : "Home"}</Link>
-              </motion.div>
-              <motion.div
-              initial={{x:-10, opacity:0}}
-              animate={{x:0, opacity:1}}
-              transition={{duration:1, delay:0.6}}
-              >
-                <Link href="/biography" onClick={e => toggleOpen(false)} className={pathname === "/biography" ? "bg-red-400/80  px-2 py-1 rounded-full italic w-20 mx-auto font-bold" : "w-20 mx-auto font-mono"}>{language === "hun" ? "Életrajz" : "Biography"}</Link>
-              </motion.div>
-              <motion.div
-              initial={{x:-20, opacity:0}}
-              animate={{x:0, opacity:1}}
-              transition={{duration:1, delay:0.8}}
-              >
-                <Link href="/gallery" onClick={e => toggleOpen(false)} className={pathname === "/gallery" ? "bg-red-400/80  px-2 py-1 rounded-full italic w-20 mx-auto font-bold" : "w-20 mx-auto font-mono"}>{language === "hun" ? "Képtár" : "Gallery"}</Link>
-              </motion.div>
-              <motion.div
-              initial={{x:-30, opacity:0}}
-              animate={{x:0, opacity:1}}
-              transition={{duration:1, delay:1}}
-              >
-                <Link href="/videos" onClick={e => toggleOpen(false)} className={pathname === "/videos" ? "bg-red-400/80 px-2 py-1 rounded-full italic w-20 mx-auto font-bold" : "w-20 mx-auto font-mono"}>{language === "hun" ? "Videók" : "Videos"}</Link>
-              </motion.div>
-            </motion.div>
-        }
-        {open && 
-        <motion.div 
-        initial={{opacity:0}}
-        animate={{opacity:1}}
-        className="fixed top-0 h-screen bg-black/60 w-screen z-20" onClick={e => toggleOpen(false)}
-        />
-        }
-    </div>
-  )
+    const toggle = () => setOpen(!open);
+    const closeMenu = () => setOpen(false);
+
+    return (
+        <>
+            <button
+                type="button"
+                className="relative inline-flex h-10 w-10 flex-col items-center justify-center gap-1.5 rounded-full border border-rose-100 bg-white/80 shadow-sm transition hover:border-rose-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-rose-300"
+                onClick={toggle}
+                aria-expanded={open}
+                aria-label={open ? "Close navigation" : "Open navigation"}
+            >
+                <span
+                    className={`h-0.5 w-5 rounded-full bg-rose-500 transition-transform ${
+                        open ? "translate-y-1.5 rotate-45" : ""
+                    }`}
+                />
+                <span
+                    className={`h-0.5 w-4 rounded-full bg-rose-500 transition-all ${
+                        open ? "opacity-0" : ""
+                    }`}
+                />
+                <span
+                    className={`h-0.5 w-5 rounded-full bg-rose-500 transition-transform ${
+                        open ? "-translate-y-1.5 -rotate-45" : ""
+                    }`}
+                />
+            </button>
+
+            <AnimatePresence>
+                {open && (
+                    <>
+                        <motion.nav
+                            id="main-navigation"
+                            initial={{ opacity: 0, y: -20 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            exit={{ opacity: 0, y: -20 }}
+                            transition={{ duration: 0.2 }}
+                            className="fixed top-20 left-0 right-0 z-40 mx-auto w-full max-w-sm rounded-3xl border border-rose-100 bg-white/90 p-6 text-sm shadow-2xl backdrop-blur md:max-w-md"
+                        >
+                            <p className="mb-4 text-xs uppercase tracking-[0.4em] text-rose-300">
+                                Menu
+                            </p>
+                            <div className="flex flex-col gap-3">
+                                {NAV_LINKS.map((item, index) => {
+                                    const isActive = pathname === item.href;
+                                    return (
+                                        <motion.div
+                                            key={item.href}
+                                            initial={{ opacity: 0, x: -10 }}
+                                            animate={{ opacity: 1, x: 0 }}
+                                            transition={{
+                                                duration: 0.25,
+                                                delay: 0.05 * index,
+                                            }}
+                                        >
+                                            <Link
+                                                href={item.href}
+                                                onClick={closeMenu}
+                                                className={`flex items-center justify-between rounded-2xl border px-4 py-3 text-base font-medium transition ${
+                                                    isActive
+                                                        ? "border-transparent bg-gradient-to-r from-rose-500 to-orange-400 text-white shadow-lg"
+                                                        : "border-rose-100/80 text-slate-600 hover:border-rose-200 hover:text-rose-500"
+                                                }`}
+                                            >
+                                                {language === "hun"
+                                                    ? item.label.hun
+                                                    : item.label.eng}
+                                                <span
+                                                    aria-hidden
+                                                    className="text-xs tracking-widest text-rose-300"
+                                                >
+                                                    →
+                                                </span>
+                                            </Link>
+                                        </motion.div>
+                                    );
+                                })}
+                            </div>
+                        </motion.nav>
+                        <motion.button
+                            aria-label="Close navigation"
+                            type="button"
+                            className="fixed inset-0 z-30 bg-slate-900/50"
+                            onClick={closeMenu}
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            exit={{ opacity: 0 }}
+                        />
+                    </>
+                )}
+            </AnimatePresence>
+        </>
+    );
 }
