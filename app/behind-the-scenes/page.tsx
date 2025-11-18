@@ -66,8 +66,9 @@ export default function Page({}: Props) {
                         {posts.map((post) => {
                             const isVideo = post.media_url.includes("mp4");
                             const regex = /@(\S+)/g;
-                            const modifiedCaption =
-                                post.caption.match(regex) ?? [];
+                            const modifiedCaption: string[] =
+                                post.caption.match(regex)?.map((tag) => tag) ??
+                                [];
 
                             return (
                                 <article
