@@ -6,7 +6,7 @@ const nextConfig = {
     appDir: true,
   },
   images:{
-    domains: ['scontent.cdninstagram.com', 'scontent-dus1-1.cdninstagram.com', 'scontent-fra3-1.cdninstagram.com', 'scontent-fra3-2.cdninstagram.com', 'npechxvoqfwdsvkljinx.supabase.co'], 
+    domains: ['scontent.cdninstagram.com', 'scontent-dus1-1.cdninstagram.com', 'scontent-fra3-1.cdninstagram.com', 'scontent-fra3-2.cdninstagram.com'],
   },
   webpack: (config) => {
     config.resolve.alias = config.resolve.alias || {};

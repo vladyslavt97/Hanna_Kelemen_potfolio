@@ -83,22 +83,20 @@ export default function Navigation({}: Props) {
 
             <AnimatePresence>
                 {open && (
-                    <>
-                        <motion.button
-                            type="button"
-                            aria-label="Close navigation backdrop"
-                            className="fixed inset-0 z-40 bg-slate-900/80 backdrop-blur"
-                            initial={{ opacity: 0 }}
-                            animate={{ opacity: 1 }}
-                            exit={{ opacity: 0 }}
-                            onClick={closeMenu}
-                        />
+                    <motion.div
+                        className="fixed inset-0 z-40 bg-gradient-to-br from-rose-600 via-fuchsia-600 to-slate-900 text-white"
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        onClick={closeMenu}
+                    >
                         <motion.div
-                            initial={{ x: "100%" }}
-                            animate={{ x: 0 }}
-                            exit={{ x: "100%" }}
-                            transition={{ type: "spring", stiffness: 70, damping: 15 }}
-                            className="fixed inset-y-0 right-0 z-50 w-full bg-gradient-to-b from-rose-600 via-rose-500 to-orange-400 px-6 py-10 text-white md:w-2/3 lg:w-1/3"
+                            initial={{ y: 40, opacity: 0 }}
+                            animate={{ y: 0, opacity: 1 }}
+                            exit={{ y: 40, opacity: 0 }}
+                            transition={{ duration: 0.35 }}
+                            onClick={(e) => e.stopPropagation()}
+                            className="flex h-full flex-col px-8 py-10"
                         >
                             <div className="flex items-center justify-between">
                                 <p className="text-xs uppercase tracking-[0.6em] text-white/70">
@@ -113,8 +111,7 @@ export default function Navigation({}: Props) {
                                     ×
                                 </button>
                             </div>
-
-                            <div className="mt-12 flex flex-col gap-6 text-2xl font-semibold">
+                            <div className="mt-12 flex flex-col gap-6 text-3xl font-semibold">
                                 {NAV_LINKS.map((item, index) => {
                                     const isActive = pathname === item.href;
                                     return (
@@ -123,8 +120,8 @@ export default function Navigation({}: Props) {
                                             initial={{ opacity: 0, x: 40 }}
                                             animate={{ opacity: 1, x: 0 }}
                                             transition={{
-                                                delay: 0.1 * index,
-                                                duration: 0.35,
+                                                delay: 0.08 * index,
+                                                duration: 0.3,
                                             }}
                                         >
                                             <Link
@@ -132,14 +129,17 @@ export default function Navigation({}: Props) {
                                                 onClick={closeMenu}
                                                 className={`flex items-center justify-between rounded-2xl px-3 py-2 transition ${
                                                     isActive
-                                                        ? "bg-white/20 text-white"
-                                                        : "text-white/80 hover:bg-white/10"
+                                                        ? "text-white"
+                                                        : "text-white/70 hover:text-white"
                                                 }`}
                                             >
                                                 {language === "hun"
                                                     ? item.label.hun
                                                     : item.label.eng}
-                                                <span aria-hidden className="text-base">
+                                                <span
+                                                    aria-hidden
+                                                    className="text-base"
+                                                >
                                                     ↗
                                                 </span>
                                             </Link>
@@ -147,8 +147,13 @@ export default function Navigation({}: Props) {
                                     );
                                 })}
                             </div>
+                            <div className="mt-auto text-sm text-white/70">
+                                <p>
+                                    © {new Date().getFullYear()} Hanna Kelemen
+                                </p>
+                            </div>
                         </motion.div>
-                    </>
+                    </motion.div>
                 )}
             </AnimatePresence>
         </>
